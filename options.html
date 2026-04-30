@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TabSplit — Settings</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      font-size: 13px;
+      max-width: 460px;
+      margin: 24px auto;
+      padding: 0 16px 32px;
+      color: #222;
+    }
+    h1 { font-size: 18px; margin-bottom: 6px; }
+    .subtitle { color: #666; margin-bottom: 24px; line-height: 1.5; }
+    h2 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: #666; margin: 32px 0 8px; }
+    .option-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .option-row label { color: #333; }
+    input[type=number] {
+      width: 52px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 6px 8px;
+      font-size: 13px;
+    }
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-family: monospace;
+      line-height: 1.6;
+      resize: vertical;
+      min-height: 80px;
+    }
+    .field-hint { font-size: 11px; color: #888; margin: 6px 0 0; line-height: 1.5; }
+    button {
+      padding: 7px 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #f8f8f8;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    button:hover { background: #eee; }
+    button.primary { background: #1a73e8; color: #fff; border-color: #1a73e8; }
+    button.primary:hover { background: #1557b0; }
+    .btn-row { display: flex; gap: 8px; margin-top: 32px; align-items: center; }
+    #saved-msg { color: #1a7a3c; display: none; }
+    code {
+      background: #e8eaed;
+      border-radius: 3px;
+      padding: 1px 4px;
+      font-family: monospace;
+      font-size: 11px;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>TabSplit</h1>
+  <p class="subtitle">Splits tabs from the same site into a separate window when enough are open.</p>
+
+  <h2>Threshold</h2>
+  <div class="option-row">
+    <label for="min-tabs">Split into new window when</label>
+    <input type="number" id="min-tabs" min="1" max="99">
+    <label for="min-tabs">or more tabs share a site</label>
+  </div>
+
+  <h2>Split by path prefix</h2>
+  <textarea id="split-by-path" placeholder="atlassian.net"></textarea>
+  <p class="field-hint">Domains where the first URL path segment is also used for grouping, e.g. <code>atlassian.net/jira</code> vs <code>atlassian.net/wiki</code>. One per line.</p>
+
+  <h2>Ignore</h2>
+  <textarea id="ignore-domains" placeholder="google.com&#10;localhost"></textarea>
+  <p class="field-hint">Tabs on these domains are never moved, regardless of count. One per line.</p>
+
+  <div class="btn-row">
+    <button class="primary" id="save">Save</button>
+    <button id="reset">Reset to defaults</button>
+    <span id="saved-msg">Saved!</span>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
