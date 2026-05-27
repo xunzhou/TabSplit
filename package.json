@@ -4,12 +4,13 @@
   "private": true,
   "description": "Build/sign scripts for the TabSplit Firefox extension. Source lives at the repo root; manifest.json is the source of truth for the extension version.",
   "scripts": {
-    "build": "web-ext build --overwrite-dest --ignore-files \"package.json\" \"package-lock.json\" \"node_modules/**\" \".claude/**\" \"README.md\" \".gitignore\"",
-    "lint": "web-ext lint --ignore-files \"package.json\" \"package-lock.json\" \"node_modules/**\" \".claude/**\"",
-    "sign": "web-ext sign --channel=unlisted --ignore-files \"package.json\" \"package-lock.json\" \"node_modules/**\" \".claude/**\" \"README.md\" \".gitignore\"",
+    "build": "web-ext build --overwrite-dest --ignore-files \"package.json\" \"package-lock.json\" \"node_modules/**\" \".claude/**\" \"README.md\" \".gitignore\" \".env\"",
+    "lint": "web-ext lint --ignore-files \"package.json\" \"package-lock.json\" \"node_modules/**\" \".claude/**\" \".env\"",
+    "sign": "dotenv -e .env -- web-ext sign --channel=unlisted --ignore-files \"package.json\" \"package-lock.json\" \"node_modules/**\" \".claude/**\" \"README.md\" \".gitignore\" \".env\"",
     "run": "web-ext run --browser-console"
   },
   "devDependencies": {
+    "dotenv-cli": "^11.0.0",
     "web-ext": "^8.3.0"
   }
 }

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TabSplit",
-  "version": "1.0",
+  "version": "1.0.1",
   "description": "Split tabs from the same site into separate windows, on demand.",
   "homepage_url": "https://github.com/xunzhou/TabSplit",
   "permissions": ["tabs", "storage"],
@@ -31,7 +31,10 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "tabsplit@xunzhou.github.io"
+      "id": "tabsplit@xunzhou.github.io",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   },
   "commands": {
