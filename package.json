@@ -7,6 +7,7 @@
     "build": "web-ext build --overwrite-dest --ignore-files \"package.json\" \"package-lock.json\" \"node_modules/**\" \".claude/**\" \"README.md\" \".gitignore\" \".env\"",
     "lint": "web-ext lint --ignore-files \"package.json\" \"package-lock.json\" \"node_modules/**\" \".claude/**\" \".env\"",
     "sign": "dotenv -e .env -- web-ext sign --channel=unlisted --ignore-files \"package.json\" \"package-lock.json\" \"node_modules/**\" \".claude/**\" \"README.md\" \".gitignore\" \".env\"",
+    "fetch": "node scripts/fetch-xpi.mjs",
     "run": "web-ext run --browser-console"
   },
   "devDependencies": {
