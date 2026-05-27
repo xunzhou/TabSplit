@@ -46,6 +46,10 @@
     "revert": {
       "suggested_key": { "default": "Alt+Shift+Z" },
       "description": "Revert tabs to previous layout"
+    },
+    "detach": {
+      "suggested_key": { "default": "Alt+Shift+D" },
+      "description": "Detach current tab to a new window"
     }
   }
 }

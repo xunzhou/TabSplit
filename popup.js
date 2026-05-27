@@ -3,9 +3,10 @@ const api = typeof browser !== 'undefined' ? browser : chrome;
 const splitBtn = document.getElementById('split');
 const splitAllBtn = document.getElementById('split-all');
 const revertBtn = document.getElementById('revert');
+const detachBtn = document.getElementById('detach');
 const status = document.getElementById('status');
 
-const allBtns = [splitBtn, splitAllBtn, revertBtn];
+const allBtns = [splitBtn, splitAllBtn, revertBtn, detachBtn];
 
 function setWorking(msg) {
   allBtns.forEach(b => { b.disabled = true; });
@@ -48,6 +49,25 @@ async function doReorganize(all) {
 
 splitBtn.addEventListener('click', () => doReorganize(false));
 splitAllBtn.addEventListener('click', () => doReorganize(true));
+
+detachBtn.addEventListener('click', async () => {
+  setWorking('…');
+  try {
+    const result = await api.runtime.sendMessage({ action: 'detach' });
+    if (result?.error) throw new Error(result.error);
+    if (result?.skipped) {
+      setDone('Skipped: only tab in window');
+      return;
+    }
+    if (result?.merged) {
+      setDone('Merged back to original window');
+      return;
+    }
+    setDone('Detached to new window');
+  } catch (err) {
+    setError(err.message);
+  }
+});
 
 revertBtn.addEventListener('click', async () => {
   setWorking('Reverting…');

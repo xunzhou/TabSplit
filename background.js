@@ -84,6 +84,57 @@ async function splitTabs(all = false) {
   return summary;
 }
 
+async function detachActiveTab() {
+  const [tab] = await api.tabs.query({ active: true, currentWindow: true });
+  if (!tab) return { error: 'no active tab' };
+
+  const { detachLog = {} } = await api.storage.local.get('detachLog');
+  const origin = detachLog[tab.id];
+
+  // Toggle path: tab is in the detach log → merge it back to its origin.
+  // Firefox preserves tab.id across tabs.move, so the log key stays valid.
+  if (origin) {
+    const openWindows = new Set((await api.windows.getAll()).map(w => w.id));
+    if (!openWindows.has(origin.windowId)) {
+      delete detachLog[tab.id];
+      await api.storage.local.set({ detachLog });
+      return { error: 'original window has been closed' };
+    }
+    await api.tabs.move(tab.id, { windowId: origin.windowId, index: origin.index });
+    await api.tabs.update(tab.id, { active: true });
+    await api.windows.update(origin.windowId, { focused: true });
+    delete detachLog[tab.id];
+    await api.storage.local.set({ detachLog });
+    await updateBadge();
+    return { merged: tab.id, title: tab.title };
+  }
+
+  const tabsInWin = await api.tabs.query({ windowId: tab.windowId });
+  // Firefox refuses to create a window from a tab that is its window's only
+  // tab; treat that as a no-op rather than an error.
+  if (tabsInWin.length <= 1) return { skipped: true, reason: 'only tab in window' };
+
+  detachLog[tab.id] = {
+    windowId: tab.windowId,
+    index: tab.index,
+    timestamp: Date.now(),
+  };
+  await api.storage.local.set({ detachLog });
+  await api.windows.create({ tabId: tab.id });
+  await updateBadge();
+  return { detached: tab.id, title: tab.title };
+}
+
+// Drop detach-log entries for tabs that no longer exist so the map doesn't
+// grow unboundedly across browser sessions.
+api.tabs.onRemoved.addListener(async (tabId) => {
+  const { detachLog } = await api.storage.local.get('detachLog');
+  if (detachLog && detachLog[tabId]) {
+    delete detachLog[tabId];
+    await api.storage.local.set({ detachLog });
+  }
+});
+
 async function revertTabs() {
   const { stash } = await api.storage.local.get('stash');
   if (!stash) throw new Error('Nothing to revert');
@@ -175,6 +226,7 @@ api.commands.onCommand.addListener(async (command) => {
   if (command === 'split') await splitTabs(false);
   if (command === 'split-all') await splitTabs(true);
   if (command === 'revert') await revertTabs();
+  if (command === 'detach') await detachActiveTab();
 });
 
 api.runtime.onMessage.addListener((message, _sender, sendResponse) => {
@@ -184,6 +236,10 @@ api.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   }
   if (message.action === 'revert') {
     revertTabs().then(sendResponse).catch(err => sendResponse({ error: err.message }));
+    return true;
+  }
+  if (message.action === 'detach') {
+    detachActiveTab().then(sendResponse).catch(err => sendResponse({ error: err.message }));
     return true;
   }
   if (message.action === 'getStash') {

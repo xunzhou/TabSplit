@@ -30,7 +30,7 @@
     #split:hover:not(:disabled) { background: #1557b0; }
     #revert { background: #e8eaed; color: #444; }
     #revert:hover:not(:disabled) { background: #d2d4d8; }
-    #split-all {
+    #split-all, #detach {
       flex: none;
       width: 100%;
       padding: 6px;
@@ -40,9 +40,11 @@
       color: #555;
       font-size: 12px;
       cursor: pointer;
+      margin-bottom: 6px;
     }
-    #split-all:hover:not(:disabled) { background: #f0f0f0; }
-    #split-all:disabled { opacity: 0.45; cursor: default; }
+    #split-all:hover:not(:disabled),
+    #detach:hover:not(:disabled) { background: #f0f0f0; }
+    #split-all:disabled, #detach:disabled { opacity: 0.45; cursor: default; }
     .shortcut { display: block; font-size: 10px; opacity: 0.7; margin-top: 2px; }
     #status {
       margin-top: 8px;
@@ -75,6 +77,9 @@
   </div>
   <button id="split-all">
     Split all windows &nbsp;<span style="opacity:.6;font-size:10px">Alt+Shift+W</span>
+  </button>
+  <button id="detach" title="Toggle: detach to new window, or merge back to origin">
+    Detach / merge tab &nbsp;<span style="opacity:.6;font-size:10px">Alt+Shift+D</span>
   </button>
   <div id="status"></div>
   <div id="footer">
